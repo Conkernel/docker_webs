@@ -1,19 +1,27 @@
 FROM nginx:alpine
 
-LABEL maintainer="oloco" \
-      description="docker.web.casa.lan + crawler.web.casa.lan" \
-      version="3.0"
+# ... [Resto de LABEL, etc.] ...
 
-# Instalar Node.js y PM2
+# Instalar Node.js, NPM y PM2 (pm2 puede ser global, pero otras dependencias no)
 RUN apk add --no-cache nodejs npm iproute2 && \
     npm install -g pm2
 
-# Crear directorios
-RUN mkdir -p /var/www /var/www/crawler
+# 1. Establecer el directorio de trabajo
+WORKDIR /var/www/crawler
 
-# Copiar archivos
+# 2. Copiar solo los archivos de manifiesto para aprovechar el cache.
+# Si package.json/package-lock.json no cambian, Docker no reinstala node_modules.
+COPY crawler/package*.json ./
+
+# 3. Instalar dependencias locales (¡Esto es lo que faltaba!)
+# Se ejecuta dentro de /var/www/crawler, donde está package.json
+RUN npm install
+
+# 4. Copiar el resto de los archivos de tu proyecto
+COPY crawler .
+# ...
+# Copiar archivos restantes y configuraciones de Nginx
 COPY docker.sh /var/www/docker.sh
-COPY crawler /var/www/crawler
 COPY docker.web.casa.lan.conf /etc/nginx/conf.d/docker.web.casa.lan.conf
 COPY crawler.web.casa.lan.conf /etc/nginx/conf.d/crawler.web.casa.lan.conf
 
