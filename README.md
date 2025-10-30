@@ -18,7 +18,7 @@ curl -sL http://docker.web.casa.lan
 o
 
 ``` bash
-docker run -d   --name gifted_liskov   -p 80:80  -p 3000:3000 oloco/web_crawler_and_docker
+docker run -d   --name docker_webs   -p 80:80  -p 3000:3000 oloco/web_crawler_and_docker
 
 ```
 La otra web servida es http://crawler.web.casa.lan
