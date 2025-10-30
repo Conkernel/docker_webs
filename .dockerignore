@@ -1,3 +1,6 @@
+crawler/.git
 .git
 node_modules
+crawler/node_modules/
 *.log
+crawler/*.log
