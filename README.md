@@ -8,8 +8,8 @@ docker run -d oloco/web_crawler_and_docker
 o
 
 ``` bash
-git clone https://github.com/Conkernel/docker.git
-cd docker
+git clone https://github.com/Conkernel/docker_webs.git
+cd docker_webs
 docker compose up -d
 ```
 
