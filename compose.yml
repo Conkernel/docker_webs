@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  web-crawler:
+    image: oloco/web_crawler_and_docker:latest
+    container_name: web-crawler
+    restart: unless-stopped
+    ports:
+      - "80:80"     # Nginx → http://docker.web.casa.lan
+      - "3000:3000" # Node.js → http://crawler.web.casa.lan:3000 o proxy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Opcional: volúmenes para desarrollo
+    # volumes:
+    #   - ./docker.sh:/var/www/docker.sh:ro
+    #   - ./crawler:/var/www/crawler
+    #   - ./nginx/docker.web.casa.lan.conf:/etc/nginx/conf.d/docker.web.casa.lan.conf:ro
+    #   - ./nginx/crawler.web.casa.lan.conf:/etc/nginx/conf.d/crawler.web.casa.lan.conf:ro
+
+networks:
+  default:
+    driver: bridge
