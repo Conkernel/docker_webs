@@ -3,8 +3,14 @@
 ``` bash
 docker login -u oloco
 
-docker run oloco/web_crawler_and_docker
+docker run -d oloco/web_crawler_and_docker
 ```
+o
+
+``` bash
+docker compose up -d
+```
+
 
 ``` bash
 curl -sL http://docker.web.casa.lan
