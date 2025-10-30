@@ -21,7 +21,7 @@ docker run -d --name docker_webs -p 80:80 -p 3000:3000 oloco/web_crawler_and_doc
 
 ## Instalar docker en Ubuntu:
 ``` bash
-curl -sL http://docker.web.casa.lan
+curl -sL http://docker.web.casa.lan | bash
 ```
 
 
