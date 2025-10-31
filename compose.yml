@@ -1,26 +1,48 @@
+# compose.yml
 services:
-  # === TU APP ACTUAL (sin cambios en puertos externos) ===
-  web:
+  # ========================================
+  # 1. WEB LOCAL: HTTP directo (crawler.web.casa.lan)
+  # ========================================
+  web-local:
     build: .
-    container_name: crawler-web
+    container_name: crawler-web-local
+    restart: unless-stopped
+    ports:
+      - "80:80"          # ← Nginx (acceso HTTP local)
+      - "3000:3000"      # ← Node.js directo (para depuración)
+    expose:
+      - "3000"           # ← Para que Nginx interno pueda acceder
+    networks:
+      - local-network
+
+  # ========================================
+  # 2. WEB INTERNET: HTTPS con SSL automático
+  # ========================================
+  web-internet:
+    build: .
+    container_name: crawler-web-internet
     restart: unless-stopped
     expose:
-      - "80"        # Solo expone internamente
+      - "80"
     environment:
-      - VIRTUAL_HOST=${DOMAIN}
+      - VIRTUAL_HOST=web.conkernel.site
       - VIRTUAL_PORT=80
-      - LETSENCRYPT_HOST=${DOMAIN}
+      - LETSENCRYPT_HOST=web.conkernel.site
       - LETSENCRYPT_EMAIL=${EMAIL}
     networks:
       - proxy-network
+    depends_on:
+      - nginx-proxy
 
-  # === NGINX PROXY CON SSL AUTOMÁTICO ===
+  # ========================================
+  # 3. NGINX PROXY (solo para internet)
+  # ========================================
   nginx-proxy:
     image: jwilder/nginx-proxy
     container_name: nginx-proxy
     ports:
-      - "80:80"
-      - "443:443"
+      - "443:443"                   # Solo HTTPS para internet
+      # NO exponemos 80 aquí → evita conflicto con web-local
     volumes:
       - certs:/etc/nginx/certs
       - vhost:/etc/nginx/vhost.d
@@ -30,7 +52,9 @@ services:
       - proxy-network
     restart: unless-stopped
 
-  # === CERTBOT AUTOMÁTICO (ACME COMPANION) ===
+  # ========================================
+  # 4. CERTBOT (ACME COMPANION)
+  # ========================================
   acme-companion:
     image: nginxproxy/acme-companion
     container_name: acme-companion
@@ -49,14 +73,20 @@ services:
       - proxy-network
     restart: unless-stopped
 
-# === VOLUMENES COMPARTIDOS ===
+# ========================================
+# VOLUMENES
+# ========================================
 volumes:
   certs:
   vhost:
   html:
   acme:
 
-# === RED INTERNA ===
+# ========================================
+# REDES
+# ========================================
 networks:
+  local-network:
+    driver: bridge
   proxy-network:
     driver: bridge
