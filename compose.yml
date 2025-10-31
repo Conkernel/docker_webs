@@ -1,6 +1,6 @@
 services:
   web-crawler:
-    image: oloco/web_crawler_and_docker:v4.3
+    image: oloco/web_crawler_and_docker:v4.4
     container_name: web-crawler
     restart: unless-stopped
     ports:
