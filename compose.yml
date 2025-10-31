@@ -12,13 +12,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 10s
-    # Opcional: volúmenes para desarrollo
-    # volumes:
-    #   - ./docker.sh:/var/www/docker.sh:ro
-    #   - ./crawler:/var/www/crawler
-    #   - ./nginx/docker.web.casa.lan.conf:/etc/nginx/conf.d/docker.web.casa.lan.conf:ro
-    #   - ./nginx/crawler.web.casa.lan.conf:/etc/nginx/conf.d/crawler.web.casa.lan.conf:ro
-
 networks:
   default:
     driver: bridge
