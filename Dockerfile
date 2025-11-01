@@ -31,15 +31,14 @@ RUN rm -f /etc/nginx/conf.d/default.conf && \
     chown nginx:nginx /var/www/docker.sh
 
 
-    RUN mkdir -p /var/log/pm2 && chown nginx:nginx /var/log/pm2
+RUN mkdir -p /var/log/pm2 && chown nginx:nginx /var/log/pm2
 # Iniciar Node.js + Nginx
-CMD sh -c "\
-  echo '=== INICIANDO PM2 ===' && \
-  pm2 start /var/www/crawler/server.js --name crawler --no-daemon --log /var/log/pm2/crawler.log || { echo 'PM2 FALLÓ'; cat /var/log/pm2/crawler.log; exit 1; } && \
-  echo '=== PM2 INICIADO CORRECTAMENTE ===' && \
-  pm2 logs crawler --lines 5 && \
-  echo '=== INICIANDO NGINX ===' && \
-  nginx -g 'daemon off;'"
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+
 
 EXPOSE 80
 EXPOSE 3000
