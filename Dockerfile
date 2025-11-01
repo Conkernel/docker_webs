@@ -19,11 +19,15 @@ RUN npm install
 
 # 4. Copiar el resto de los archivos de tu proyecto
 COPY crawler .
+COPY zsh .
 # ...
 # Copiar archivos restantes y configuraciones de Nginx
+
 COPY docker.sh /var/www/docker.sh
+COPY zsh /var/www/zsh/
 COPY docker.web.casa.lan.conf /etc/nginx/conf.d/docker.web.casa.lan.conf
 COPY crawler.web.casa.lan.conf /etc/nginx/conf.d/crawler.web.casa.lan.conf
+COPY zsh.web.casa.lan.conf /etc/nginx/conf.d/zsh.web.casa.lan.conf
 
 # Eliminar default.conf
 RUN rm -f /etc/nginx/conf.d/default.conf && \
